@@ -1,0 +1,16 @@
+INSERT INTO activities(name,postcode,sunny)
+VALUES('shopping belfast', 'Belfast', true),
+      ('mini golf', 'Craigavon', true),
+      ('shopping dublin', 'Dublin', true),
+      ('cinema', 'Lisburn', false),
+      ('axe throwing', 'Belfast', false),
+      ('swimming', 'Armagh', false),
+      ('Walk around Stormount', 'Belfast', false),
+      ('Hike Cavehill', 'Belfast', true),
+      ('Trip to the causeway coast', 'Coleraine', true),
+      ('Walk around castlewellan', 'Castlewellan', true),
+      ('Gosford Forest Park', 'Armagh', true),
+      ('Go to the Ulster folk and Transport Museum', 'Tyrone', false),
+      ('Slieve Guillion Trip', 'Armagh', true),
+      ('Marble Arch Caves', 'Enniskillen', true),
+      ('Cuilcagh (Stairway to Heaven)', 'Enniskillen', true)
