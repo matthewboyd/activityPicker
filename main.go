@@ -1,11 +1,11 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"github.com/go-redis/redis/v8"
+	_ "github.com/jackc/pgx/v4/stdlib"
+	"github.com/jmoiron/sqlx"
 	"github.com/matthewboyd/activities"
-	"github.com/sony/gobreaker"
 	"log"
 	"net/http"
 	"net/http/pprof"
@@ -16,41 +16,32 @@ import (
 
 var (
 	//HostAddress = os.Getenv("HOST_ADDRESS")
-	HostAddress   = ":8080"
-	hostname      = os.Getenv("POSTGRES_URL")
-	username      = os.Getenv("POSTGRES_USER")
-	password      = os.Getenv("POSTGRES_PASSWORD")
-	database_name = os.Getenv("POSTGRES_DB")
+	HostAddress  = ":8080"
+	hostname     = os.Getenv("POSTGRES_URL")
+	username     = os.Getenv("POSTGRES_USER")
+	password     = os.Getenv("POSTGRES_PASSWORD")
+	databaseName = os.Getenv("POSTGRES_DB")
 )
 
 const (
 	hostPort = 5432
 )
 
-var cb *gobreaker.CircuitBreaker
-
-func init() {
-	var st gobreaker.Settings
-	st.Name = "HTTP GET"
-	st.ReadyToTrip = func(counts gobreaker.Counts) bool {
-		failureRatio := float64(counts.TotalFailures) / float64(counts.Requests)
-		return counts.Requests >= 5 && failureRatio >= 0.6
-	}
-	cb = gobreaker.NewCircuitBreaker(st)
-}
-
 func main() {
 	logger := log.New(os.Stdout, "matt ", log.LstdFlags|log.Lshortfile)
 	pgConString := fmt.Sprintf("port=%d host=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
-		hostPort, hostname, username, password, database_name)
+		hostPort, hostname, username, password, databaseName)
 	redisAddress := fmt.Sprintf("%s:6379", os.Getenv("REDIS_URL"))
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     redisAddress,
 		Password: "",
 		DB:       0,
 	})
-	database, err := sql.Open("postgres", pgConString)
+	database, err := sqlx.Open("pgx", pgConString)
+	if err != nil {
+		log.Fatalf("Failed to connect to postgres db", err)
+	}
 	database.SetMaxOpenConns(5)
 	defer database.Close()
 	mux := http.NewServeMux()
