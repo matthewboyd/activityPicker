@@ -1,10 +1,10 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/go-redis/redis/v8"
-	_ "github.com/jackc/pgx/v4/stdlib"
-	"github.com/jmoiron/sqlx"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/matthewboyd/activities"
 	"log"
 	"net/http"
@@ -38,11 +38,11 @@ func main() {
 		Password: "",
 		DB:       0,
 	})
-	database, err := sqlx.Open("pgx", pgConString)
+
+	database, err := pgxpool.Connect(context.Background(), pgConString)
 	if err != nil {
 		log.Fatalf("Failed to connect to postgres db", err)
 	}
-	database.SetMaxOpenConns(5)
 	defer database.Close()
 	mux := http.NewServeMux()
 
@@ -68,10 +68,11 @@ func main() {
 func newServer(mux *http.ServeMux, serverAddress string) *http.Server {
 	return &http.Server{
 
-		Addr:         serverAddress,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
-		IdleTimeout:  120 * time.Second,
-		Handler:      mux,
+		Addr:              serverAddress,
+		ReadTimeout:       5 * time.Second,
+		WriteTimeout:      10 * time.Second,
+		IdleTimeout:       120 * time.Second,
+		Handler:           mux,
+		ReadHeaderTimeout: 5 * time.Second,
 	}
 }
