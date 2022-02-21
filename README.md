@@ -37,6 +37,9 @@ Then once you're in the container, type:
 This will show you all the keys that are currently being stored in redis.
 
 
+# Next Service
+* Service to add attractions based on their postcode, the service will then go to the NorthernIreland collection and get the coordinates of the attraction and insert them into the NorthernIrelandAttraction table. 
+
 Improvements:
 
 - Add users so that they can tick off activities that they've completed and they won't be shown to them
