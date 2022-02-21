@@ -38,7 +38,7 @@ This will show you all the keys that are currently being stored in redis.
 
 
 # Next Service
-* Service to add attractions based on their postcode, the service will then go to the NorthernIreland collection and get the coordinates of the attraction and insert them into the NorthernIrelandAttraction table. 
+* Service to add attractions based on their postcode, the service will then go to the NorthernIreland collection and get the coordinates of the attraction and insert them into the NorthernIrelandAttraction table. This will only be accessible by an admin section
 
 Improvements:
 
